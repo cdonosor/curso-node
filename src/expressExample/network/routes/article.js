@@ -1,5 +1,6 @@
 const { Router } = require('express')
 const { nanoid } = require('nanoid')
+const jwt = require('jsonwebtoken')
 /**
  * @param {Object} article
  * @param {String} article.name
@@ -22,9 +23,44 @@ const {
   }
 } = queries
 
+ArticleRouter.route('/article/login')
+.get(async (req, res) => {
+  try {
+    const {
+      headers: { authorization }
+    } = req
+    const payload = { sub: '1234567890', name: 'John Doe' }
+    const token = jwt.sign(payload, process.env.SECRET, {
+      expiresIn: '2min'
+    })
+
+    console.log('token', token)
+
+    response({ error: false, message: null, res, status: 200 })
+  } catch (error) {
+    console.error(error)
+    response({ message: 'Internal server error', res })
+  }
+})
+
 ArticleRouter.route('/article')
   .get(async (req, res) => {
     try {
+      const {
+        headers: { authorization }
+      } = req
+
+      if (!authorization) throw new httpErrors.Unauthorized('You are not allowed')
+
+    const [tokenType, token] = authorization.split(' ')
+
+    if (tokenType !== 'Bearer')
+      throw new httpErrors.Unauthorized('You are not allowed')
+
+    const payload = jwt.verify(token, process.env.SECRET)
+
+    console.log(payload)
+
       const articles = await getAllArticles()
 
       response({ error: false, message: articles, res, status: 200 })

@@ -35,3 +35,33 @@ Content-Type: application/json
 
 ### Get url
 GET http://localhost:2000/url/ns1gn_
+
+
+### Get all article
+GET http://localhost:2000/article
+
+### Save a new article
+POST http://localhost:2000/article
+Content-Type: application/json
+
+{
+  "name": "Torta",
+  "decription": "torta de piña",
+  "image": "images/torta.jpg",
+  "price": 8000
+}
+
+### Get one article
+GET http://localhost:2000/article/VrXWZsJyXqXhZZWCavN6y
+
+### Update an article by id
+PATCH http://localhost:2000/article/VrXWZsJyXqXhZZWCavN6y
+Content-Type: application/json
+
+{
+  "price": 9000
+}
+
+### Delete an article by id
+DELETE http://localhost:2000/article/VrXWZsJyXqXhZZWCavN6y
+
